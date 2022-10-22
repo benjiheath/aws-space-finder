@@ -1,0 +1,34 @@
+{
+  "version": "21.0.0",
+  "files": {
+    "df9a93a06f8a4fcd09dc09220605469cf9d501b5023294f002395840ae038dca": {
+      "source": {
+        "path": "asset.df9a93a06f8a4fcd09dc09220605469cf9d501b5023294f002395840ae038dca",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "914646656465-ap-southeast-2": {
+          "bucketName": "cdk-hnb659fds-assets-914646656465-ap-southeast-2",
+          "objectKey": "df9a93a06f8a4fcd09dc09220605469cf9d501b5023294f002395840ae038dca.zip",
+          "region": "ap-southeast-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::914646656465:role/cdk-hnb659fds-file-publishing-role-914646656465-ap-southeast-2"
+        }
+      }
+    },
+    "110f6c776d6002e2b351cd050424530a021bffee3cbea1bd232fd55fa3b537dc": {
+      "source": {
+        "path": "Space-Finder.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "914646656465-ap-southeast-2": {
+          "bucketName": "cdk-hnb659fds-assets-914646656465-ap-southeast-2",
+          "objectKey": "110f6c776d6002e2b351cd050424530a021bffee3cbea1bd232fd55fa3b537dc.json",
+          "region": "ap-southeast-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::914646656465:role/cdk-hnb659fds-file-publishing-role-914646656465-ap-southeast-2"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}
