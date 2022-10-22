@@ -224,7 +224,11 @@
                                       {
                                         "Ref": "AWS::Partition"
                                       },
-                                      ":execute-api:ap-southeast-2:914646656465:",
+                                      ":execute-api:ap-southeast-2:",
+                                      {
+                                        "Ref": "AWS::AccountId"
+                                      },
+                                      ":",
                                       {
                                         "Ref": "SpaceFinderApi7F481291"
                                       },
@@ -265,7 +269,11 @@
                                       {
                                         "Ref": "AWS::Partition"
                                       },
-                                      ":execute-api:ap-southeast-2:914646656465:",
+                                      ":execute-api:ap-southeast-2:",
+                                      {
+                                        "Ref": "AWS::AccountId"
+                                      },
+                                      ":",
                                       {
                                         "Ref": "SpaceFinderApi7F481291"
                                       },
@@ -345,6 +353,54 @@
             },
             "constructInfo": {
               "fqn": "aws-cdk-lib.aws_apigateway.RestApi",
+              "version": "2.46.0"
+            }
+          },
+          "Spaces": {
+            "id": "Spaces",
+            "path": "Space-Finder/Spaces",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "Space-Finder/Spaces/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                  "aws:cdk:cloudformation:props": {
+                    "keySchema": [
+                      {
+                        "attributeName": "spaceId",
+                        "keyType": "HASH"
+                      }
+                    ],
+                    "attributeDefinitions": [
+                      {
+                        "attributeName": "spaceId",
+                        "attributeType": "S"
+                      }
+                    ],
+                    "provisionedThroughput": {
+                      "readCapacityUnits": 5,
+                      "writeCapacityUnits": 5
+                    },
+                    "tableName": "Spaces"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                  "version": "2.46.0"
+                }
+              },
+              "ScalingRole": {
+                "id": "ScalingRole",
+                "path": "Space-Finder/Spaces/ScalingRole",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.46.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_dynamodb.Table",
               "version": "2.46.0"
             }
           },
@@ -434,7 +490,9 @@
                   "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
                   "aws:cdk:cloudformation:props": {
                     "code": {
-                      "s3Bucket": "cdk-hnb659fds-assets-914646656465-ap-southeast-2",
+                      "s3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-southeast-2"
+                      },
                       "s3Key": "df9a93a06f8a4fcd09dc09220605469cf9d501b5023294f002395840ae038dca.zip"
                     },
                     "role": {

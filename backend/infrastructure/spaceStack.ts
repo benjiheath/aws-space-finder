@@ -1,3 +1,4 @@
+import { GenericDDBTable } from './genericDDBTable';
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as Lambda from 'aws-cdk-lib/aws-lambda';
@@ -6,6 +7,7 @@ import path = require('path');
 
 export class SpaceStack extends Stack {
   private api = new RestApi(this, 'SpaceFinderApi');
+  private spacesTable = new GenericDDBTable('Spaces', 'spaceId', this);
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
