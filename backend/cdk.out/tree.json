@@ -143,7 +143,7 @@
                           "Ref": "SpaceFinderApi7F481291"
                         },
                         "deploymentId": {
-                          "Ref": "SpaceFinderApiDeployment0B45BCC13281efd70ca1868836e1d93a605cc77d"
+                          "Ref": "SpaceFinderApiDeployment0B45BCC15719aea82d59939c4b2958ab391d9156"
                         },
                         "stageName": "prod"
                       }
@@ -211,7 +211,7 @@
                                 "action": "lambda:InvokeFunction",
                                 "functionName": {
                                   "Fn::GetAtt": [
-                                    "helloLambda6E86C2B7",
+                                    "helloLambdaNode3FCF89A7",
                                     "Arn"
                                   ]
                                 },
@@ -256,7 +256,7 @@
                                 "action": "lambda:InvokeFunction",
                                 "functionName": {
                                   "Fn::GetAtt": [
-                                    "helloLambda6E86C2B7",
+                                    "helloLambdaNode3FCF89A7",
                                     "Arn"
                                   ]
                                 },
@@ -315,7 +315,7 @@
                                         ":apigateway:ap-southeast-2:lambda:path/2015-03-31/functions/",
                                         {
                                           "Fn::GetAtt": [
-                                            "helloLambda6E86C2B7",
+                                            "helloLambdaNode3FCF89A7",
                                             "Arn"
                                           ]
                                         },
@@ -404,17 +404,17 @@
               "version": "2.46.0"
             }
           },
-          "hello Lambda": {
-            "id": "hello Lambda",
-            "path": "Space-Finder/hello Lambda",
+          "helloLambdaNode": {
+            "id": "helloLambdaNode",
+            "path": "Space-Finder/helloLambdaNode",
             "children": {
               "ServiceRole": {
                 "id": "ServiceRole",
-                "path": "Space-Finder/hello Lambda/ServiceRole",
+                "path": "Space-Finder/helloLambdaNode/ServiceRole",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "Space-Finder/hello Lambda/ServiceRole/Resource",
+                    "path": "Space-Finder/helloLambdaNode/ServiceRole/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                       "aws:cdk:cloudformation:props": {
@@ -450,6 +450,45 @@
                       "fqn": "aws-cdk-lib.aws_iam.CfnRole",
                       "version": "2.46.0"
                     }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "Space-Finder/helloLambdaNode/ServiceRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "Space-Finder/helloLambdaNode/ServiceRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": "s3:ListAllMyBuckets",
+                                  "Effect": "Allow",
+                                  "Resource": "*"
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "helloLambdaNodeServiceRoleDefaultPolicyADA01491",
+                            "roles": [
+                              {
+                                "Ref": "helloLambdaNodeServiceRoleBF3A7C6C"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.46.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.46.0"
+                    }
                   }
                 },
                 "constructInfo": {
@@ -459,11 +498,11 @@
               },
               "Code": {
                 "id": "Code",
-                "path": "Space-Finder/hello Lambda/Code",
+                "path": "Space-Finder/helloLambdaNode/Code",
                 "children": {
                   "Stage": {
                     "id": "Stage",
-                    "path": "Space-Finder/hello Lambda/Code/Stage",
+                    "path": "Space-Finder/helloLambdaNode/Code/Stage",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.AssetStaging",
                       "version": "2.46.0"
@@ -471,7 +510,7 @@
                   },
                   "AssetBucket": {
                     "id": "AssetBucket",
-                    "path": "Space-Finder/hello Lambda/Code/AssetBucket",
+                    "path": "Space-Finder/helloLambdaNode/Code/AssetBucket",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.aws_s3.BucketBase",
                       "version": "2.46.0"
@@ -485,7 +524,7 @@
               },
               "Resource": {
                 "id": "Resource",
-                "path": "Space-Finder/hello Lambda/Resource",
+                "path": "Space-Finder/helloLambdaNode/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
                   "aws:cdk:cloudformation:props": {
@@ -493,15 +532,20 @@
                       "s3Bucket": {
                         "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-southeast-2"
                       },
-                      "s3Key": "df9a93a06f8a4fcd09dc09220605469cf9d501b5023294f002395840ae038dca.zip"
+                      "s3Key": "960b93a543649538d9b759f06bff7f03f9d07c688bc36b8631a0d697f14e2224.zip"
                     },
                     "role": {
                       "Fn::GetAtt": [
-                        "helloLambdaServiceRoleEAB47754",
+                        "helloLambdaNodeServiceRoleBF3A7C6C",
                         "Arn"
                       ]
                     },
-                    "handler": "hello.main",
+                    "environment": {
+                      "variables": {
+                        "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+                      }
+                    },
+                    "handler": "index.handler",
                     "runtime": "nodejs14.x"
                   }
                 },
@@ -512,7 +556,7 @@
               }
             },
             "constructInfo": {
-              "fqn": "aws-cdk-lib.aws_lambda.Function",
+              "fqn": "aws-cdk-lib.aws_lambda_nodejs.NodejsFunction",
               "version": "2.46.0"
             }
           },

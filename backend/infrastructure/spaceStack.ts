@@ -4,6 +4,8 @@ import { Construct } from 'constructs';
 import * as Lambda from 'aws-cdk-lib/aws-lambda';
 import { RestApi, LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
 import path = require('path');
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
 export class SpaceStack extends Stack {
   private api = new RestApi(this, 'SpaceFinderApi');
@@ -12,14 +14,26 @@ export class SpaceStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const helloLambda = new Lambda.Function(this, 'hello Lambda', {
-      runtime: Lambda.Runtime.NODEJS_14_X,
-      code: Lambda.Code.fromAsset(path.join(__dirname, '..', 'services', 'hello')),
-      handler: 'hello.main',
+    const helloLambdaNode = new NodejsFunction(this, 'helloLambdaNode', {
+      entry: path.join(__dirname, '..', 'services', 'node-lambda', 'hello.ts'),
+      handler: 'handler',
     });
 
-    const helloLambdaIntegration = new LambdaIntegration(helloLambda);
-    const helloLamdaResource = this.api.root.addResource('hello');
-    helloLamdaResource.addMethod('GET', helloLambdaIntegration);
+    this.setupPolicies(helloLambdaNode);
+    this.setupLambdaIntegration(helloLambdaNode);
+  }
+
+  private setupPolicies(lambdaFn: NodejsFunction) {
+    const s3ListPolicy = new PolicyStatement();
+    s3ListPolicy.addActions('s3:ListAllMyBuckets');
+    s3ListPolicy.addResources('*');
+
+    lambdaFn.addToRolePolicy(s3ListPolicy);
+  }
+
+  private setupLambdaIntegration(lambdaFn: NodejsFunction) {
+    const lambdaIntegration = new LambdaIntegration(lambdaFn);
+    const resource = this.api.root.addResource('hello');
+    resource.addMethod('GET', lambdaIntegration);
   }
 }
