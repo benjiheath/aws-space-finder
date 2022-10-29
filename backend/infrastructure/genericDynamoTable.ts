@@ -1,7 +1,7 @@
 import { Stack } from 'aws-cdk-lib';
 import * as dynamo from 'aws-cdk-lib/aws-dynamodb';
 
-export class GenericDDBTable {
+export class GenericDynamoTable {
   private name: string;
   private primaryKey: string;
   private stack: Stack;
