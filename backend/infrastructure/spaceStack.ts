@@ -23,7 +23,7 @@ export class SpaceStack extends Stack {
     });
 
     this.setupPolicies(helloLambdaNode);
-    this.setupLambdaIntegration(helloLambdaNode);
+    this.setupGenericLambdaIntegration(helloLambdaNode);
     this.setupApiIntegrations();
   }
 
@@ -35,7 +35,7 @@ export class SpaceStack extends Stack {
     lambdaFn.addToRolePolicy(s3ListPolicy);
   }
 
-  private setupLambdaIntegration(lambdaFn: NodejsFunction) {
+  private setupGenericLambdaIntegration(lambdaFn: NodejsFunction) {
     const lambdaIntegration = new LambdaIntegration(lambdaFn);
     const resource = this.api.root.addResource('hello');
     resource.addMethod('GET', lambdaIntegration);

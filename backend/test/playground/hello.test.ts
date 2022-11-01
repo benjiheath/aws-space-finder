@@ -1,9 +1,6 @@
-import { handler } from '../../services/spacesTable/create';
+import { handler } from '../../services/spacesTable/read';
 
-const testEvent = {
-  body: {
-    location: 'dubbo',
-  },
-};
-
-handler(testEvent as any, {} as any);
+const result = handler({} as any, {} as any).then((res) => {
+  const items = JSON.parse(res.body);
+  console.log(123);
+});
