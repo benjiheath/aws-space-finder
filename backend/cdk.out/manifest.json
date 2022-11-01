@@ -23,7 +23,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-ap-southeast-2",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-ap-southeast-2",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-ap-southeast-2/b4d114bac6976a428d9689a24613a754049ba8362dcc81d868d3b5dc8b6d973e.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-ap-southeast-2/3995bd9248765c0adfd29b63aaf0ca087e584886aa6b254e75db3bd575e188a9.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -100,18 +100,18 @@
             "data": "SpaceFinderApihelloGETE2850162"
           }
         ],
-        "/Space-Finder/Spaces": [
+        "/Space-Finder/SpacesTable": [
           {
             "type": "aws:cdk:hasPhysicalName",
             "data": {
-              "Ref": "SpacesAE8EB89E"
+              "Ref": "SpacesTable8A997355"
             }
           }
         ],
-        "/Space-Finder/Spaces/Resource": [
+        "/Space-Finder/SpacesTable/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "SpacesAE8EB89E"
+            "data": "SpacesTable8A997355"
           }
         ],
         "/Space-Finder/helloLambdaNode/ServiceRole/Resource": [
