@@ -1,6 +1,9 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
 import { v4 } from 'uuid';
+import { getEnv } from '../../utils/getEnv';
+
+const TABLE_NAME = getEnv('TABLE_NAME');
 
 const dbClient = new DynamoDB.DocumentClient();
 
@@ -17,7 +20,7 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
   try {
     await dbClient
       .put({
-        TableName: 'SpacesTable',
+        TableName: TABLE_NAME,
         Item: item,
       })
       .promise();

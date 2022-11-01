@@ -8,7 +8,11 @@ import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
 export class SpaceStack extends Stack {
   private api = new RestApi(this, 'SpaceFinderApi');
-  private spacesTable = new GenericDynamoTable('SpacesTable', 'spaceId', this);
+  private spacesTable = new GenericDynamoTable(this, {
+    tableName: 'SpacesTable',
+    primaryKey: 'spaceId',
+    createLambdaPath: 'create',
+  });
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
@@ -20,6 +24,7 @@ export class SpaceStack extends Stack {
 
     this.setupPolicies(helloLambdaNode);
     this.setupLambdaIntegration(helloLambdaNode);
+    this.setupApiIntegrations();
   }
 
   private setupPolicies(lambdaFn: NodejsFunction) {
@@ -34,5 +39,10 @@ export class SpaceStack extends Stack {
     const lambdaIntegration = new LambdaIntegration(lambdaFn);
     const resource = this.api.root.addResource('hello');
     resource.addMethod('GET', lambdaIntegration);
+  }
+
+  private setupApiIntegrations() {
+    const spacesResource = this.api.root.addResource('spaces');
+    spacesResource.addMethod('POST', this.spacesTable.createLambdaIntegration);
   }
 }
