@@ -1,11 +1,12 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
 import { v4 } from 'uuid';
-import { getEnv } from '../../utils/getEnv';
-
-const TABLE_NAME = getEnv('TABLE_NAME');
+import { config } from '../../config';
+import { TableClient } from '../dbClient';
 
 const dbClient = new DynamoDB.DocumentClient();
+
+const spacesTable = new TableClient(dbClient, config.db.tables.spaces);
 
 async function handler(event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> {
   const result: APIGatewayProxyResult = {
@@ -18,12 +19,7 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
   const item = { ...itemBody, spaceId: v4() };
 
   try {
-    await dbClient
-      .put({
-        TableName: TABLE_NAME,
-        Item: item,
-      })
-      .promise();
+    await spacesTable.put(item);
   } catch (err) {
     result.body = (err as Error)?.message;
   }

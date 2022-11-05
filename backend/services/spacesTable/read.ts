@@ -1,10 +1,11 @@
+import { TableClient } from './../dbClient';
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
-import { getEnv } from '../../utils/getEnv';
-
-const TABLE_NAME = getEnv('TABLE_NAME');
+import { config } from '../../config';
 
 const dbClient = new DynamoDB.DocumentClient();
+
+const spacesTable = new TableClient(dbClient, config.db.tables.spaces);
 
 async function handler(event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> {
   const result: APIGatewayProxyResult = {
@@ -13,8 +14,18 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
   };
 
   try {
-    const res = await dbClient.scan({ TableName: TABLE_NAME }).promise();
-    result.body = JSON.stringify(res);
+    if (event.queryStringParameters) {
+      if (spacesTable.primaryKey in event.queryStringParameters) {
+        const keyValue = event.queryStringParameters[spacesTable.primaryKey];
+
+        const res = await spacesTable.queryByPrimaryKey(keyValue);
+
+        result.body = JSON.stringify(res);
+      }
+    } else {
+      const res = await spacesTable.scan();
+      result.body = JSON.stringify(res);
+    }
   } catch (err) {
     result.body = (err as Error)?.message;
   }

@@ -12,6 +12,7 @@ export class SpaceStack extends Stack {
     tableName: 'SpacesTable',
     primaryKey: 'spaceId',
     createLambdaPath: 'create',
+    readLambdaPath: 'read',
   });
 
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -44,5 +45,6 @@ export class SpaceStack extends Stack {
   private setupApiIntegrations() {
     const spacesResource = this.api.root.addResource('spaces');
     spacesResource.addMethod('POST', this.spacesTable.createLambdaIntegration);
+    spacesResource.addMethod('GET', this.spacesTable.readLambdaIntegration);
   }
 }
