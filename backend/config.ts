@@ -1,3 +1,8 @@
+// require dotenv
+import { config as env } from 'dotenv';
+
+env();
+
 export const getEnv = (envVar: string): string => {
   const envValue = process.env[envVar];
   if (!envValue) {
@@ -9,6 +14,7 @@ export const getEnv = (envVar: string): string => {
 export interface Table {
   tableName: string;
   primaryKey: string;
+  secondaryIndexes: string[];
 }
 
 interface Database {
@@ -25,6 +31,10 @@ export const config: Config = {
       spaces: {
         tableName: getEnv('TABLE_NAME'),
         primaryKey: getEnv('PRIMARY_KEY'),
+        //!NTS -- can only perform one creation/deletion a row at a time
+        // e.g can't replace a sec index with another in one go - need to remove
+        // the old one -> deploy -> add new one -> deploy
+        secondaryIndexes: ['location', 'whereuat'],
       },
     },
   },

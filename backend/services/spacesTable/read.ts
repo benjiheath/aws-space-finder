@@ -21,6 +21,10 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
         const res = await spacesTable.queryByPrimaryKey(keyValue);
 
         result.body = JSON.stringify(res);
+      } else {
+        const res = await spacesTable.query(event.queryStringParameters);
+
+        result.body = JSON.stringify(res);
       }
     } else {
       const res = await spacesTable.scan();

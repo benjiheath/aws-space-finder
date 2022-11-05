@@ -11,6 +11,7 @@ export interface TableProps {
   readLambdaPath?: string;
   updateLambdaPath?: string;
   deleteLambdaPath?: string;
+  secondaryIndexes?: string[];
 }
 
 export class GenericDynamoTable {
@@ -36,6 +37,7 @@ export class GenericDynamoTable {
 
   private init() {
     this.createTable();
+    this.addSecondaryIndexes();
     this.createLambdas();
   }
 
@@ -49,6 +51,22 @@ export class GenericDynamoTable {
       },
       tableName,
     });
+  }
+
+  private addSecondaryIndexes() {
+    const { secondaryIndexes } = this.props;
+
+    if (secondaryIndexes) {
+      secondaryIndexes.forEach((secondaryIndex) => {
+        this.table.addGlobalSecondaryIndex({
+          indexName: secondaryIndex,
+          partitionKey: {
+            name: secondaryIndex,
+            type: dynamo.AttributeType.STRING,
+          },
+        });
+      });
+    }
   }
 
   private createSingleLambda(lambdaName: string): NodejsFunction {

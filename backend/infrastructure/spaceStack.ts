@@ -5,6 +5,7 @@ import { RestApi, LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
 import path = require('path');
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { config } from '../config';
 
 export class SpaceStack extends Stack {
   private api = new RestApi(this, 'SpaceFinderApi');
@@ -13,6 +14,7 @@ export class SpaceStack extends Stack {
     primaryKey: 'spaceId',
     createLambdaPath: 'create',
     readLambdaPath: 'read',
+    secondaryIndexes: config.db.tables.spaces.secondaryIndexes,
   });
 
   constructor(scope: Construct, id: string, props?: StackProps) {
