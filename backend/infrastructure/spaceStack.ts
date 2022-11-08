@@ -12,10 +12,13 @@ export class SpaceStack extends Stack {
   private spacesTable = new GenericDynamoTable(this, {
     tableName: 'SpacesTable',
     primaryKey: 'spaceId',
-    createLambdaPath: 'create',
-    readLambdaPath: 'read',
-    updateLambdaPath: 'update',
     secondaryIndexes: config.db.tables.spaces.secondaryIndexes,
+    lambdaPaths: {
+      create: 'create',
+      read: 'read',
+      update: 'update',
+      delete: 'delete',
+    },
   });
 
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -47,7 +50,9 @@ export class SpaceStack extends Stack {
 
   private setupApiIntegrations() {
     const spacesResource = this.api.root.addResource('spaces');
-    spacesResource.addMethod('POST', this.spacesTable.createLambdaIntegration);
-    spacesResource.addMethod('GET', this.spacesTable.readLambdaIntegration);
+    spacesResource.addMethod('POST', this.spacesTable.lambdaIntegrations.create);
+    spacesResource.addMethod('GET', this.spacesTable.lambdaIntegrations.read);
+    spacesResource.addMethod('PUT', this.spacesTable.lambdaIntegrations.update);
+    spacesResource.addMethod('DELETE', this.spacesTable.lambdaIntegrations.delete);
   }
 }

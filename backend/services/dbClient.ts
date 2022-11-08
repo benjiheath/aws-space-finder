@@ -73,6 +73,15 @@ export class TableClient {
       .promise();
   };
 
+  public delete = (id: string): Promise<DbUpdateResult> => {
+    return this.dbClient
+      .delete({
+        TableName: this.tableName,
+        Key: { [this.primaryKey]: id },
+      })
+      .promise();
+  };
+
   private parseReqBody = <A extends Record<string, any>>(reqBody: A) => {
     const reqBodyKey = Object.keys(reqBody)[0];
     const reqBodyValue = reqBody[reqBodyKey];

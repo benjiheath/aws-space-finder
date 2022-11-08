@@ -3,15 +3,17 @@ import { Stack } from 'aws-cdk-lib';
 import * as dynamo from 'aws-cdk-lib/aws-dynamodb';
 import path = require('path');
 import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
+import { PartialRecord } from '../types/utils';
+
+type Crud = 'create' | 'read' | 'update' | 'delete';
+
+type CrudCollection<A> = PartialRecord<Crud, A>;
 
 export interface TableProps {
   tableName: string;
   primaryKey: string;
-  createLambdaPath?: string;
-  readLambdaPath?: string;
-  updateLambdaPath?: string;
-  deleteLambdaPath?: string;
   secondaryIndexes?: string[];
+  lambdaPaths?: CrudCollection<string>;
 }
 
 export class GenericDynamoTable {
@@ -19,15 +21,9 @@ export class GenericDynamoTable {
   private table: dynamo.Table;
   private props: TableProps;
 
-  private createLambda?: NodejsFunction;
-  private readLambda?: NodejsFunction;
-  private updateLambda?: NodejsFunction;
-  private deleteLambda?: NodejsFunction;
+  private lambdas: CrudCollection<NodejsFunction> = {};
 
-  public createLambdaIntegration: LambdaIntegration;
-  public readLambdaIntegration: LambdaIntegration;
-  public updateLambdaIntegration: LambdaIntegration;
-  public deleteLambdaIntegration: LambdaIntegration;
+  public lambdaIntegrations: CrudCollection<LambdaIntegration> = {};
 
   public constructor(stack: Stack, props: TableProps) {
     this.stack = stack;
@@ -83,24 +79,24 @@ export class GenericDynamoTable {
   }
 
   private createLambdas() {
-    const actions = ['create', 'read', 'update', 'delete'] as const;
+    const crudActions: Crud[] = ['create', 'read', 'update', 'delete'];
 
-    actions.forEach((action) => {
-      const lambdaPath = this.props[`${action}LambdaPath`];
+    crudActions.forEach((action) => {
+      const lambdaPath = this.props?.lambdaPaths?.[action];
 
       if (lambdaPath) {
         const lambda = this.createSingleLambda(lambdaPath);
-        this[`${action}Lambda`] = lambda;
-        this[`${action}LambdaIntegration`] = new LambdaIntegration(lambda);
+        this.lambdas[action] = lambda;
+        this.lambdaIntegrations[action] = new LambdaIntegration(lambda);
 
-        this.grantTableRights(this[`${action}Lambda`]);
+        this.grantTableRights(this.lambdas[action]);
       }
     });
   }
 
   private grantTableRights = (lambda?: NodejsFunction) => {
     if (lambda) {
-      const permission = lambda === this.readLambda ? 'Read' : 'Write';
+      const permission = lambda === this.lambdas.read ? 'Read' : 'Write';
       this.table[`grant${permission}Data`](lambda);
     }
   };
