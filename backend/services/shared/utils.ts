@@ -8,9 +8,9 @@ export const parseEventBody = (event: APIGatewayProxyEvent) => {
   return typeof event.body === 'object' ? event.body : JSON.parse(event.body);
 };
 
-export const generateItemWithId = (event: APIGatewayProxyEvent) => {
+export const generateItemWithId = (event: APIGatewayProxyEvent, primarykey: string) => {
   const itemBody = parseEventBody(event);
-  const item = { ...itemBody, id: genId() };
+  const item = { ...itemBody, [primarykey]: genId() };
 
   return item;
 };

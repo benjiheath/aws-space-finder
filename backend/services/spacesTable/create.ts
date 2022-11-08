@@ -13,7 +13,7 @@ const spacesTable = new TableClient(dbClient, config.db.tables.spaces);
 async function handler(event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> {
   const result: APIGatewayProxyResult = { statusCode: 200, body: '' };
 
-  const item = generateItemWithId(event);
+  const item = generateItemWithId(event, spacesTable.primaryKey);
 
   try {
     validateAsSpaceEntry(item);
