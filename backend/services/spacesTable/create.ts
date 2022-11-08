@@ -1,8 +1,10 @@
+import { MissingFieldError } from './../shared/validation';
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
-import { v4 } from 'uuid';
 import { config } from '../../config';
 import { TableClient } from '../dbClient';
+import { validateAsSpaceEntry } from '../shared/validation';
+import { genId } from '../shared/utils';
 
 const dbClient = new DynamoDB.DocumentClient();
 
@@ -15,16 +17,22 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
   };
 
   const itemBody = typeof event.body === 'object' ? event.body : JSON.parse(event.body);
-
-  const item = { ...itemBody, spaceId: v4() };
+  const item = { ...itemBody, spaceId: genId() };
 
   try {
+    validateAsSpaceEntry(item);
+
     await spacesTable.put(item);
+
+    result.body = JSON.stringify(`created item with spaceId: ${item.spaceId}`);
   } catch (err) {
+    if (err instanceof MissingFieldError) {
+      result.statusCode = 403;
+    } else {
+      result.statusCode = 500;
+    }
     result.body = (err as Error)?.message;
   }
-
-  result.body = JSON.stringify(`created item with spaceId: ${item.spaceId}`);
 
   return result;
 }
