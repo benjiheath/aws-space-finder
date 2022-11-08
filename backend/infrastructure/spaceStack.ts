@@ -14,6 +14,7 @@ export class SpaceStack extends Stack {
     primaryKey: 'spaceId',
     createLambdaPath: 'create',
     readLambdaPath: 'read',
+    updateLambdaPath: 'update',
     secondaryIndexes: config.db.tables.spaces.secondaryIndexes,
   });
 

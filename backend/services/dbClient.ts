@@ -7,6 +7,7 @@ import { Table } from '../config';
 export type DbQueryResult = DynamoDB.DocumentClient.ItemList | undefined;
 export type DbScanResult = PromiseResult<DynamoDB.DocumentClient.ScanOutput, AWSError>;
 export type DbPutResult = PromiseResult<DynamoDB.DocumentClient.PutItemOutput, AWSError>;
+export type DbUpdateResult = PromiseResult<DynamoDB.DocumentClient.UpdateItemOutput, AWSError>;
 
 export class TableClient {
   private dbClient: DynamoDB.DocumentClient;
@@ -35,12 +36,6 @@ export class TableClient {
       .then((r) => r.Items);
   };
 
-  private parseQuery = (queryParams: APIGatewayProxyEventQueryStringParameters) => {
-    const queryKey = Object.keys(queryParams)[0];
-    const queryValue = queryParams[queryKey];
-    return { queryKey, queryValue };
-  };
-
   public query = (queryParams: APIGatewayProxyEventQueryStringParameters): Promise<DbQueryResult> => {
     const { queryKey, queryValue } = this.parseQuery(queryParams);
 
@@ -62,5 +57,31 @@ export class TableClient {
         Item: item,
       })
       .promise();
+  };
+
+  public update = (id: string, reqBody: Record<string, any>): Promise<DbUpdateResult> => {
+    const { reqBodyKey, reqBodyValue } = this.parseReqBody(reqBody);
+    return this.dbClient
+      .update({
+        TableName: this.tableName,
+        Key: { [this.primaryKey]: id },
+        UpdateExpression: 'set #zzzNew = :new',
+        ExpressionAttributeNames: { '#zzzNew': reqBodyKey },
+        ExpressionAttributeValues: { ':new': reqBodyValue },
+        ReturnValues: 'UPDATED_NEW',
+      })
+      .promise();
+  };
+
+  private parseReqBody = <A extends Record<string, any>>(reqBody: A) => {
+    const reqBodyKey = Object.keys(reqBody)[0];
+    const reqBodyValue = reqBody[reqBodyKey];
+    return { reqBodyKey, reqBodyValue };
+  };
+
+  private parseQuery = (queryParams: APIGatewayProxyEventQueryStringParameters) => {
+    const queryKey = Object.keys(queryParams)[0];
+    const queryValue = queryParams[queryKey];
+    return { queryKey, queryValue };
   };
 }

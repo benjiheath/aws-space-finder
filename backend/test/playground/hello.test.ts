@@ -1,5 +1,5 @@
 import { APIGatewayProxyEvent } from 'aws-lambda';
-import { handler } from '../../services/spacesTable/read';
+import { handler } from '../../services/spacesTable/update';
 
 // const event: APIGatewayProxyEvent = {
 //   queryStringParameters: {
@@ -9,7 +9,10 @@ import { handler } from '../../services/spacesTable/read';
 
 const event: APIGatewayProxyEvent = {
   queryStringParameters: {
-    whereuat: 'Dubbo',
+    spaceId: 'f15aa393-5c12-4929-ad3e-f8670eda5660',
+  },
+  body: {
+    whereuat: 'new Paynesville',
   },
 } as any;
 
