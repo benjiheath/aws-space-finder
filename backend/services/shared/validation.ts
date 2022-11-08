@@ -6,8 +6,7 @@ export class MissingFieldError extends Error {
   }
 }
 
-export const validateAsSpaceEntry = (arg: any) => {
-  // const expectedFields = Object.keys((arg as Space)) as (keyof Space)[];
+export const validateAsSpaceEntry = (arg: any): Space => {
   const expectedFields: (keyof Space)[] = ['spaceId', 'name', 'whereabouts'];
 
   expectedFields.forEach((field) => {
@@ -15,4 +14,6 @@ export const validateAsSpaceEntry = (arg: any) => {
       throw new MissingFieldError(field);
     }
   });
+
+  return arg;
 };

@@ -8,33 +8,27 @@ const dbClient = new DynamoDB.DocumentClient();
 const spacesTable = new TableClient(dbClient, config.db.tables.spaces);
 
 async function handler(event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> {
-  const result: APIGatewayProxyResult = {
-    statusCode: 200,
-    body: 'Hello from DynamoDB',
-  };
+  let body;
+
+  const response: APIGatewayProxyResult = { statusCode: 200, body: '' };
 
   try {
     if (event.queryStringParameters) {
-      if (spacesTable.primaryKey in event.queryStringParameters) {
-        const keyValue = event.queryStringParameters[spacesTable.primaryKey];
+      const reqPrimarykey = event.queryStringParameters?.[spacesTable.primaryKey];
 
-        const res = await spacesTable.queryByPrimaryKey(keyValue);
-
-        result.body = JSON.stringify(res);
-      } else {
-        const res = await spacesTable.query(event.queryStringParameters);
-
-        result.body = JSON.stringify(res);
-      }
+      body = reqPrimarykey
+        ? await spacesTable.queryByPrimaryKey(reqPrimarykey)
+        : await spacesTable.query(event.queryStringParameters);
     } else {
-      const res = await spacesTable.scan();
-      result.body = JSON.stringify(res);
+      body = await spacesTable.scan();
     }
   } catch (err) {
-    result.body = (err as Error)?.message;
+    response.body = (err as Error)?.message;
   }
 
-  return result;
+  response.body = JSON.stringify(body);
+
+  return response;
 }
 
 export { handler };

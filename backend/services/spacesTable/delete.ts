@@ -13,15 +13,20 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
     body: 'Hello from DynamoDB',
   };
 
-  const spaceId = event.queryStringParameters?.[primaryKey];
+  try {
+    const spaceId = event.queryStringParameters?.[primaryKey];
 
-  if (!spaceId) {
-    throw new Error('No spaceId provided');
+    if (!spaceId) {
+      throw new Error('No spaceId provided');
+    }
+
+    const deleteResult = await spacesTable.delete(spaceId);
+
+    result.body = JSON.stringify(deleteResult);
+  } catch (err) {
+    result.statusCode = 500;
+    result.body = (err as Error)?.message;
   }
-
-  const deleteResult = await spacesTable.delete(spaceId);
-
-  result.body = JSON.stringify(deleteResult);
 
   return result;
 }
