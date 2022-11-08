@@ -10,18 +10,25 @@ const { primaryKey, ...spacesTable } = new TableClient(dbClient, config.db.table
 
 async function handler(event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> {
   const reqBody = parseEventBody(event);
-  const spaceId = event.queryStringParameters?.[primaryKey];
 
-  if (!spaceId) {
-    throw new Error('No spaceId provided');
+  try {
+    const spaceId = event.queryStringParameters?.[primaryKey];
+    if (!spaceId) {
+      throw new Error('No spaceId provided');
+    }
+
+    const updatedResult = await spacesTable.update(spaceId, reqBody);
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify(updatedResult),
+    };
+  } catch (err) {
+    return {
+      statusCode: 500,
+      body: (err as Error)?.message,
+    };
   }
-
-  const updatedResult = await spacesTable.update(spaceId, reqBody);
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify(updatedResult),
-  };
 }
 
 export { handler };
