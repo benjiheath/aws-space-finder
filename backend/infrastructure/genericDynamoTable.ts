@@ -3,11 +3,13 @@ import { Stack } from 'aws-cdk-lib';
 import * as dynamo from 'aws-cdk-lib/aws-dynamodb';
 import path = require('path');
 import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
-import { PartialRecord } from '../types/utils';
 
-type Crud = 'create' | 'read' | 'update' | 'delete';
-
-type CrudCollection<A> = PartialRecord<Crud, A>;
+interface CrudCollection<A = unknown> {
+  create?: A;
+  read?: A;
+  update?: A;
+  delete?: A;
+}
 
 export interface TableProps {
   tableName: string;
@@ -79,7 +81,7 @@ export class GenericDynamoTable {
   }
 
   private createLambdas() {
-    const crudActions: Crud[] = ['create', 'read', 'update', 'delete'];
+    const crudActions = ['create', 'read', 'update', 'delete'] as (keyof CrudCollection)[];
 
     crudActions.forEach((action) => {
       const lambdaPath = this.props?.lambdaPaths?.[action];
