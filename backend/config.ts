@@ -17,12 +17,19 @@ export interface Table {
   secondaryIndexes: string[];
 }
 
-interface Database {
+interface DatabaseConfig {
   tables: Record<string, Table>;
 }
 
+interface CognitoConfig {
+  pool: { id: string };
+  appClient: { id: string };
+  region: string;
+}
+
 export interface Config {
-  db: Database;
+  db: DatabaseConfig;
+  cognito: CognitoConfig;
 }
 
 export const config: Config = {
@@ -37,5 +44,14 @@ export const config: Config = {
         secondaryIndexes: ['location', 'whereuat'],
       },
     },
+  },
+  cognito: {
+    pool: {
+      id: getEnv('USER_POOL_ID'),
+    },
+    appClient: {
+      id: getEnv('APP_CLIENT_ID'),
+    },
+    region: getEnv('REGION'),
   },
 };
