@@ -22,9 +22,11 @@ interface DatabaseConfig {
 }
 
 interface CognitoConfig {
-  pool: { id: string };
+  userPool: { id: string };
+  identityPool: { id: string; address: string };
   appClient: { id: string };
   region: string;
+  testUser: { username: string; password: string };
 }
 
 export interface Config {
@@ -46,12 +48,20 @@ export const config: Config = {
     },
   },
   cognito: {
-    pool: {
+    userPool: {
       id: getEnv('USER_POOL_ID'),
+    },
+    identityPool: {
+      id: getEnv('IDENTITY_POOL_ID'),
+      address: `cognito-idp.${getEnv('REGION')}.amazonaws.com/${getEnv('USER_POOL_ID')}`,
     },
     appClient: {
       id: getEnv('APP_CLIENT_ID'),
     },
     region: getEnv('REGION'),
+    testUser: {
+      username: getEnv('TEST_USER_NAME'),
+      password: getEnv('TEST_USER_PASSWORD'),
+    },
   },
 };
