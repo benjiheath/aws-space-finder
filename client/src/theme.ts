@@ -6,7 +6,7 @@ export const theme = extendTheme({
       html: { overflowY: 'scroll' },
       'html, body': {
         color: 'gray.600',
-        bg: 'gray.50',
+        bg: '#FFFCF6',
         fontSize: '14px',
       },
       body: {
