@@ -1,3 +1,4 @@
+import { CheckIcon } from '@chakra-ui/icons';
 import {
   Heading,
   Image,
@@ -50,7 +51,13 @@ const Space = (props: SpaceProps) => {
           <ModalOverlay />
           <ModalContent bg='cream.100'>
             <ModalHeader>
-              congrats 🙄 you've reserved <Text fontWeight='bold'>Test Location</Text>
+              <Text fontWeight='medium'>congrats, you've reserved: </Text>
+              <HStack>
+                <Text fontWeight='bold' w='fit-content'>
+                  Test Location
+                </Text>
+                <CheckIcon color='cream.700' />
+              </HStack>
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody>
