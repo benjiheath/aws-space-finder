@@ -1,4 +1,5 @@
-import { Box, Button, VStack } from '@chakra-ui/react';
+import React from 'react';
+import { Button, VStack } from '@chakra-ui/react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
 import { InputField } from './generic/InputField';
@@ -12,6 +13,14 @@ export const Login = () => {
   const auth = useAuth();
   const methods = useForm<FormValues>();
 
+  React.useEffect(() => {
+    const errMsg = (auth.error as Error)?.message;
+    if (errMsg) {
+      if (errMsg === 'invalid username') methods.setError('username', { message: 'invalid username' });
+      if (errMsg === 'invalid password') methods.setError('password', { message: 'invalid password' });
+    }
+  }, [auth.error, methods]);
+
   return (
     <VStack justify='center' align='center' minH='100vh' spacing={10}>
       <FormProvider {...methods}>
@@ -23,13 +32,6 @@ export const Login = () => {
           </Button>
         </VStack>
       </FormProvider>
-      {auth.user && (
-        <VStack spacing={2}>
-          <Box>username: {auth.user?.username}</Box>
-          <Box>email: {auth.user?.email}</Box>
-          <Button onClick={auth.logout}>log out</Button>
-        </VStack>
-      )}
     </VStack>
   );
 };

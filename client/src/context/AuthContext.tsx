@@ -14,11 +14,22 @@ export interface LoginVariables {
 }
 
 const mockLogin = async (variables: LoginVariables): Promise<User | undefined> => {
-  if (variables.username === 'test' && variables.password === 'test') {
+  const isValidUsername = variables.username === 'test';
+  const isValidPassword = variables.password === 'test';
+
+  if (isValidUsername && isValidPassword) {
     return {
       username: 'test',
       email: 'test',
     };
+  }
+
+  if (!isValidUsername) {
+    throw new Error('invalid username');
+  }
+
+  if (!isValidPassword) {
+    throw new Error('invalid password');
   }
 };
 
