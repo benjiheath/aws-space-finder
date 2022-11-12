@@ -22,5 +22,4 @@ const event: APIGatewayProxyEvent = {
 
 const result = handler(event, {} as any).then((res) => {
   const items = JSON.parse(res.body);
-  console.log(123);
 });

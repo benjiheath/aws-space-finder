@@ -2,10 +2,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ProviderProps } from '../types/general';
 import React from 'react';
 import { router } from '../App';
+import Auth, { CognitoUser } from '@aws-amplify/auth';
+import Amplify from 'aws-amplify';
 
 export interface User {
   username: string;
-  email: string;
+  email?: string;
+  cognitoUser: CognitoUser;
 }
 
 export interface LoginVariables {
@@ -13,29 +16,31 @@ export interface LoginVariables {
   password: string;
 }
 
-const mockLogin = async (variables: LoginVariables): Promise<User | undefined> => {
-  const isValidUsername = variables.username === 'test';
-  const isValidPassword = variables.password === 'test';
+Amplify.configure({
+  Auth: {
+    mandatorySignIn: false,
+    region: process.env.REACT_APP_REGION,
+    userPoolId: process.env.REACT_APP_USER_POOL_ID,
+    userPoolWebClientId: process.env.REACT_APP_APP_CLIENT_ID,
+    identityPoolId: process.env.REACT_APP_IDENTITY_POOL_ID,
+    authenticationFlowType: 'USER_PASSWORD_AUTH',
+  },
+});
 
-  if (isValidUsername && isValidPassword) {
-    return {
-      username: 'test',
-      email: 'test',
-    };
-  }
+const loginFetcher = async (variables: LoginVariables): Promise<User> => {
+  const cognitoUser = (await Auth.signIn(variables.username, variables.password)) as CognitoUser;
+  const attributes = await Auth.userAttributes(cognitoUser);
 
-  if (!isValidUsername) {
-    throw new Error('invalid username');
-  }
-
-  if (!isValidPassword) {
-    throw new Error('invalid password');
-  }
+  return {
+    username: cognitoUser.getUsername(),
+    email: attributes.find((a) => a.Name === 'email')?.Value,
+    cognitoUser,
+  };
 };
 
 const useAuthentication = () => {
   const queryClient = useQueryClient();
-  const loginMutation = useMutation((variables: LoginVariables) => mockLogin(variables));
+  const loginMutation = useMutation((variables: LoginVariables) => loginFetcher(variables));
 
   React.useEffect(() => {
     if (!loginMutation.data) {

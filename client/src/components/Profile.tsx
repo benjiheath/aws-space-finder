@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 
 interface GridRowProps extends TextProps {
   label: string;
-  value: string;
+  value?: string;
 }
 
 const GridRow = (props: GridRowProps) => {
@@ -14,7 +14,7 @@ const GridRow = (props: GridRowProps) => {
       <Text fontWeight='bold' {...rest}>
         {label}
       </Text>
-      <Text {...rest}>{value}</Text>
+      <Text {...rest}>{value ?? '-'}</Text>
     </>
   );
 };
@@ -30,9 +30,9 @@ export const Profile = () => {
         Hello {user?.username},
       </Heading>
       <Text>Here's your info:</Text>
-      <SimpleGrid columns={2} mt={4} spacingX={4} spacingY={2} w={200}>
+      <SimpleGrid columns={2} mt={4} spacingY={2} w='fit-content'>
         <GridRow label='username' value={user.username} />
-        <GridRow label='email' value={user.email} />
+        <GridRow label='email' value={user?.email} />
       </SimpleGrid>
     </>
   );

@@ -26,8 +26,6 @@ const runTest = async () => {
   const someCreds = AWS.config.credentials;
 
   const buckets = await getBuckets();
-
-  console.log('someCreds', someCreds);
 };
 
 runTest();

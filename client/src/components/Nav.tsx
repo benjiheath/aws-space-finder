@@ -1,4 +1,4 @@
-import { Box, HStack, Link } from '@chakra-ui/react';
+import { HStack, Link } from '@chakra-ui/react';
 import { router } from '../App';
 import { useAuth } from '../context/AuthContext';
 
