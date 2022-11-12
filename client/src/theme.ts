@@ -18,10 +18,6 @@ export const palette = {
   error: '#AB0552',
 };
 
-const baseButtonStyles: SystemStyleInterpolation = {
-  minW: '76px',
-};
-
 type ComponentStyles = Record<string, ComponentStyleConfig>;
 
 export const theme = extendTheme({
@@ -52,7 +48,6 @@ export const theme = extendTheme({
       },
       variants: {
         primary: {
-          ...baseButtonStyles,
           bg: 'cream.400',
 
           _hover: {
@@ -60,7 +55,6 @@ export const theme = extendTheme({
           },
         },
         secondary: {
-          ...baseButtonStyles,
           transition: '0.2s',
           bg: 'cream.100',
           outline: '2px solid',

@@ -11,22 +11,25 @@ export const Nav = () => {
         <HStack
           py={4}
           mb={4}
-          minW={500}
+          w='100%'
           justify='space-between'
           borderBottom='2px solid'
           borderBottomColor='cream.200'
         >
-          <Box>
+          <HStack spacing={6}>
             <router.Link to='/home'>
-              <Link mr={6}>home</Link>
+              <Link>home</Link>
             </router.Link>
             <router.Link to='/profile'>
               <Link>profile</Link>
             </router.Link>
-          </Box>
+            <router.Link to='/spaces'>
+              <Link>spaces</Link>
+            </router.Link>
+          </HStack>
 
           <router.Link to='/'>
-            <Link onClick={logout}>log out</Link>
+            <Link onClick={logout}>log out ({user.username})</Link>
           </router.Link>
         </HStack>
       )}
