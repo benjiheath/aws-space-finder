@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ProviderProps } from '../types/general';
 import React from 'react';
+import { router } from '../App';
 
 export interface User {
   username: string;
@@ -21,33 +22,43 @@ const mockLogin = async (variables: LoginVariables): Promise<User | undefined> =
   }
 };
 
-export const useLogin = () =>
-  useMutation((variables: LoginVariables) => mockLogin(variables), {
-    mutationKey: ['user'],
-  });
-
-export const useAuthentication = () => {
+const useAuthentication = () => {
   const queryClient = useQueryClient();
-  const { mutateAsync, data, ...loginMutation } = useLogin();
+  const loginMutation = useMutation((variables: LoginVariables) => mockLogin(variables));
 
-  const login = async (variables: LoginVariables) => {
-    await mutateAsync(variables);
-  };
+  React.useEffect(() => {
+    if (!loginMutation.data) {
+      router.navigate({ to: '/' });
+    }
+  }, [loginMutation.data]);
+
+  const login = React.useCallback(
+    async (variables: LoginVariables) => {
+      const user = await loginMutation.mutateAsync(variables);
+
+      if (user) {
+        router.navigate({ to: '/home' });
+      }
+    },
+    [loginMutation]
+  );
 
   const logout = React.useCallback(() => {
     queryClient.clear();
     loginMutation.reset();
+    router.navigate({ to: '/' });
   }, [queryClient, loginMutation]);
 
-  return { login, logout, user: data, ...loginMutation };
+  return { login, logout, user: loginMutation.data, ...loginMutation };
 };
 
-export type AuthState = ReturnType<typeof useAuthentication>;
+type AuthState = ReturnType<typeof useAuthentication>;
 
-export const AuthContext = React.createContext<AuthState | null>(null);
+const AuthContext = React.createContext<AuthState | null>(null);
 
 const AuthProvider = (props: ProviderProps) => {
   const auth = useAuthentication();
+
   return <AuthContext.Provider value={auth}>{props.children}</AuthContext.Provider>;
 };
 
