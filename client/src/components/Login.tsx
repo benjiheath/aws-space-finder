@@ -18,7 +18,7 @@ export const Login = () => {
         <VStack as='form' onSubmit={methods.handleSubmit(auth.login)} spacing={4}>
           <InputField name='username' />
           <InputField name='password' />
-          <Button type='submit' disabled={!!auth.user} bg='#FFF9EE' _hover={{ bg: '#FFF5E3' }}>
+          <Button type='submit' disabled={!!auth.user}>
             log in
           </Button>
         </VStack>

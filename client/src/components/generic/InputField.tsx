@@ -11,7 +11,7 @@ const InputLabel = (props: InputLabelProps) => {
   const error = formState.errors[props.name];
 
   const text = error ? (
-    <Text display='inline' color='#AB0552'>
+    <Text display='inline' color='error'>
       {String(error.message)}
     </Text>
   ) : (
@@ -38,7 +38,7 @@ export const InputField = (props: InputFieldProps) => {
   return (
     <FormControl>
       <InputLabel name={name} />
-      <Input type={inputType} {...registration} focusBorderColor='#e6ddd3' />
+      <Input type={inputType} {...registration} focusBorderColor='cream.grayed.300' />
     </FormControl>
   );
 };
